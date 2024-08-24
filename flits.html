@@ -3,36 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tesla in Iframe</title>
+    <title>Flitsmeister refresh</title>
     <style>
         /* Remove default margins and padding */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Make the iframe fill the entire page */
+        /* Make the iframe fill the remaining space */
         iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            flex: 1;
             border: none;
+        }
+
+        /* Style the button container */
+        #controls {
+            padding: 10px;
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+
+        /* Style for the buttons */
+        #controls button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Style for the interval display */
+        #intervalDisplay {
+            font-size: 18px;
+            margin: 0 10px;
         }
     </style>
     <script>
-        // Function to refresh the iframe every 10 seconds
+        let refreshIntervalId;
+        let currentInterval = 10; // Default interval is 10 seconds
+
+        // Function to refresh the iframe
         function refreshIframe() {
             document.getElementById('teslaIframe').src += '';
         }
 
-        // Set an interval to refresh the iframe every 10 seconds
-        setInterval(refreshIframe, 10000);
+        // Function to update the refresh interval and restart the timer
+        function updateInterval(newInterval) {
+            currentInterval = newInterval;
+            document.getElementById('intervalDisplay').innerText = currentInterval + ' seconds';
+            clearInterval(refreshIntervalId);
+            refreshIntervalId = setInterval(refreshIframe, currentInterval * 1000);
+        }
+
+        // Function to increment the interval
+        function incrementInterval() {
+            updateInterval(currentInterval + 1);
+        }
+
+        // Function to decrement the interval
+        function decrementInterval() {
+            if (currentInterval > 1) {
+                updateInterval(currentInterval - 1);
+            }
+        }
+
+        // Set the initial refresh interval to 10 seconds
+        window.onload = function() {
+            document.getElementById('intervalDisplay').innerText = currentInterval + ' seconds';
+            refreshIntervalId = setInterval(refreshIframe, currentInterval * 1000);
+        }
     </script>
 </head>
 <body>
     <iframe id="teslaIframe" src="https://tesla.flitsmeister.nl"></iframe>
+    <div id="controls">
+        <button onclick="decrementInterval()">-1 Second</button>
+        <span id="intervalDisplay"></span>
+        <button onclick="incrementInterval()">+1 Second</button>
+    </div>
 </body>
 </html>
